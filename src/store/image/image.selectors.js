@@ -1,0 +1,1 @@
+export const selectImage = state => state.image.image;

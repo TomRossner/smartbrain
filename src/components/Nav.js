@@ -13,7 +13,7 @@ const Nav = () => {
 
   return (
     <nav>
-        <div className='logo' onClick={() => navigate("/smart-brain-app")}>
+        <div className='logo' onClick={() => navigate("/smartbrain-frontend")}>
           <h1>Smart Brain</h1>
           <p>Face Recognition</p>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext } from 'react';
-import { login, register } from '../http/frontRequests';
+import { login, register } from '../http/requests';
 
 export const AuthContext = createContext({
     currentUser: null,

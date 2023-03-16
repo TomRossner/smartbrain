@@ -29,7 +29,7 @@ const App = () => {
     <div className="app-container">
         <Nav/>
         <Routes>
-          <Route path="/smart-brain-app" element={<Home/>}/>
+          <Route path="/smartbrain-frontend" element={<Home/>}/>
           {!currentUser
           ? (
             <>

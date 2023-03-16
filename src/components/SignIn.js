@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { signInGoogleUser } from '../http/firebaseRequests';
-import { loginWithGoogle } from '../http/frontRequests';
+import { loginWithGoogle } from '../http/requests';
 
 export const defaultFieldValues = {
   email: "",
@@ -22,7 +22,7 @@ const SignIn = () => {
     try {
       console.log(fieldValues)
       await loginUser(fieldValues);
-      navigate("/smart-brain-app");
+      navigate("/smartbrain-frontend");
     } catch (error) {
       console.log(error)
       // setError(error);

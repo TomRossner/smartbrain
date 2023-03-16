@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
-import { updateUser } from '../http/frontRequests';
+import { updateUser } from '../http/requests';
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -21,7 +21,7 @@ const Profile = () => {
     }
 
     useEffect(() => {
-        if (!currentUser) navigate("/smart-brain-app");
+        if (!currentUser) navigate("/smartbrain-frontend");
     }, [currentUser]);
 
   return (

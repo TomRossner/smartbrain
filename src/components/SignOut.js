@@ -7,7 +7,7 @@ const SignOut = () => {
     const {currentUser} = useContext(AuthContext);
 
     useEffect(() => {
-        if (!currentUser) return navigate("/smart-brain-app");
+        if (!currentUser) return navigate("/smartbrain-frontend");
     }, [currentUser]);
 
   return null;

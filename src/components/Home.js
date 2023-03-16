@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { ImageContext } from '../contexts/ImageContext';
-import { httpService, updateUser } from '../http/frontRequests';
+import { predict, updateUser } from '../http/requests';
 import BoundingBox from './BoundingBox';
 import loader from "../assets/loader.png";
+import axios from 'axios';
 
 const Home = () => {
     const {currentUser, setCurrentUser} = useContext(AuthContext);
@@ -13,16 +14,16 @@ const Home = () => {
     const [boundingBoxes, setBoundingBoxes] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const imgRef = useRef(null);
-    const {post} = httpService;
     const [error, setError] = useState("");
 
     const handleFileUpload = (e) => {
       const reader = new FileReader();
       const filesLength = e.target.files.length;
-      reader.addEventListener("load", () => setImageURL(reader.result));
+      reader.addEventListener("load", () => setImageURL(reader.result), true);
+      console.log(typeof reader.result);
       if (filesLength) reader.readAsDataURL(e.target.files[0]);
       if (boundingBoxes.length) resetBoundingBoxes();
-      return reader.removeEventListener("load", () => {});
+      return reader.removeEventListener("load", setImageURL(reader.result), true);
     }
 
     const handleInputChange = (e) => setInputFieldValue(e.target.value);
@@ -40,19 +41,16 @@ const Home = () => {
 
     const predictImage = async () => {
       try {
-        const {data: {results}} = await post(imageURL.substring(0, 5) === "https"
-        ? "/predict"
-        : "/predict-bytes", {
-          imageURL: imageURL
-        });
+        const {data: {results}} = await predict(imageURL);
         const calculatedResults = results[0].map(result => {
           const {region_info: {bounding_box}} = result;
           return calculateFaceLocation(bounding_box);
         });
         if (error) resetError();
         setBoundingBoxes(calculatedResults);
-      } catch ({response: {data: {error}}}) {
-        return setError(error);
+      } catch ({response}) {
+        console.log(response.data.error);
+        return setError(response.data.error);
       }
     }
 
@@ -64,7 +62,7 @@ const Home = () => {
         await predictImage();
         setLoading(false);
         if (currentUser) return await updateUser(currentUser);
-      }else {
+      } else {
         await predictImage();
         setLoading(false);
         if (currentUser) return await updateUser(currentUser);
@@ -108,7 +106,7 @@ const Home = () => {
               onChange={handleFileUpload}
             />
         </div>
-        {error && <p className='error'>{error}</p>}
+        {/* {error && <p className='error'>{error}</p>} */}
         {imageURL ? <button type='button' id='detect' className='btn' onClick={handleDetect}>Detect</button> : null}
         <div className='image-container'>
             {isLoading ? <div className='loading-overlay on'><div className='spinner-container'><img src={loader} alt="loader"></img></div></div> : <div className='loading-overlay off'></div>}
