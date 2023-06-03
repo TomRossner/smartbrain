@@ -29,21 +29,21 @@ const App = () => {
     <div className="app-container">
         <Nav/>
         <Routes>
-          <Route path="/smartbrain-frontend" element={<Home/>}/>
+          <Route path="/" element={<Home/>}/>
           {!currentUser
           ? (
             <>
-              <Route path="sign-in" element={<SignIn/>}/>
-              <Route path="register" element={<Register/>}/>
+              <Route path="/sign-in" element={<SignIn/>}/>
+              <Route path="/register" element={<Register/>}/>
             </>
           ) : (
             <>  
-              <Route path="profile" element={<Profile/>}></Route>
-              <Route path="logout" element={<Logout/>}/>
+              <Route path="/profile" element={<Profile/>}></Route>
+              <Route path="/logout" element={<Logout/>}/>
             </>
           )}
         </Routes>
-        <div className="space"></div>
+        <div className="space"/>
         <Footer/>
     </div>
   )

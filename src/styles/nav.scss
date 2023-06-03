@@ -1,28 +1,59 @@
 nav{
     width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
     display: flex;
     align-items: center;
     padding: 0.2rem 2rem;
-    background-color: transparent;
     justify-content: space-between;
+    background-color: transparent;
     background: rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    z-index: 100;
+    
 
-    .logo{
+    #logo-container{
         display: flex;
-        flex-direction: column;
         align-items: center;
-        text-align: center;
-        cursor: pointer;
+        width: fit-content;
+        gap: 1rem;
+
+        #logo{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+            
+            .letters{
+                font-family: 'Chakra Petch', sans-serif;
+                color: rgb(82, 2, 136);
+                font-size: 1.8rem;
+                font-weight: 700;
+                position: absolute;
+            }
+    
+            .icon-container{
+                .icon{
+                    color: white;
+                    font-size: 3.5rem;
+                }
+            }
+        }
 
         p{
+            white-space: nowrap;
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 500;
+            font-size: 1.5rem;
             color: white;
-            font-size: 0.9rem;
         }
     }
+    
 
     ul{
         .ul-right{
@@ -43,25 +74,37 @@ nav{
             flex-direction: column;
             gap: 0.5rem;
             padding: 1rem;
-            height: 30vh;
+            height: 40vh;
             right: 0;
             top: 4rem;
             z-index: 100;
             position: absolute;
             text-align: right;
             user-select: none;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(15, 15, 15, 1);
             border: 1px solid rgba(250, 250, 250, 0.2);
-            pointer-events: initial;
+            pointer-events: all;
             
             &.open{
                 transition: height 0.3s, opacity 0.15s;
+            }
+
+            span{
+                color: white;
+                padding: 0.5em 0;
+                font-size: 1.4rem;
+                margin-bottom: 5vh;
+                text-align: center;
             }
     
             &.close{
                 height: 0;
                 opacity: 0;
                 transition: height 0.3s, opacity 0.2s;
+
+                span{
+                    display: none;
+                }
 
                 .link{
                     pointer-events: none;
@@ -95,7 +138,6 @@ nav{
 
 @media screen and (min-width: 501px) and (max-width: 768px) {
         nav{
-            position: relative;
             z-index: 100;
 
             ul{
@@ -104,7 +146,10 @@ nav{
                 }
     
                 .menu{
-                    width: 50%;
+                    width: 100%;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 1rem;
                 }
 
                 .icon-container{
@@ -119,7 +164,6 @@ nav{
 
 @media screen and (min-width: 451px) and (max-width: 500px) {
     nav{
-        position: relative;
         z-index: 100;
         ul{
             .ul-right{
@@ -127,7 +171,10 @@ nav{
             }
 
             .menu{
-                width: 60%;
+                width: 100%;
+                justify-content: center;
+                align-items: center;
+                gap: 1rem;
             }
 
             .icon-container{
@@ -139,9 +186,8 @@ nav{
         }
     }
 }
-@media screen and (min-width: 200px) and (max-width: 450px) {
+@media screen and (max-width: 450px) {
     nav{
-        position: relative;
         z-index: 100;
         ul{
             .ul-right{
@@ -150,8 +196,9 @@ nav{
 
             .menu{
                 width: 100%;
-                text-align: center;
-                gap: 1.5rem;
+                justify-content: center;
+                align-items: center;
+                gap: 1rem;
             }
 
             .icon-container{

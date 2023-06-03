@@ -1,7 +1,7 @@
 .profile-container{
     width: 20%;
     margin: 0 auto;
-    height: 60vh;
+    height: 80vh;
 
     .content{
         width: 100%;
@@ -14,17 +14,19 @@
 
         .img-container{
             width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 400px;
             margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border-radius: 50px;
+            border-radius: 20px;
             flex: 1;
 
             img{
                 width: 100%;
-                scale: 1.5;
+                border-radius: 20px;
             }
 
             .empty-picture-profile{

@@ -8,7 +8,7 @@ const Logout = () => {
 
     useEffect(() => {
         setCurrentUser(null);
-        navigate("/smartbrain-frontend");
+        navigate("/");
     }, []);
     
   return null;

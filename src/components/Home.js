@@ -5,7 +5,6 @@ import { ImageContext } from '../contexts/ImageContext';
 import { predict, updateUser } from '../http/requests';
 import BoundingBox from './BoundingBox';
 import loader from "../assets/loader.png";
-import axios from 'axios';
 
 const Home = () => {
     const {currentUser, setCurrentUser} = useContext(AuthContext);
@@ -20,7 +19,7 @@ const Home = () => {
       const reader = new FileReader();
       const filesLength = e.target.files.length;
       reader.addEventListener("load", () => setImageURL(reader.result), true);
-      console.log(typeof reader.result);
+
       if (filesLength) reader.readAsDataURL(e.target.files[0]);
       if (boundingBoxes.length) resetBoundingBoxes();
       return reader.removeEventListener("load", setImageURL(reader.result), true);
@@ -42,31 +41,31 @@ const Home = () => {
     const predictImage = async () => {
       try {
         const {data: {results}} = await predict(imageURL);
+
         const calculatedResults = results[0].map(result => {
           const {region_info: {bounding_box}} = result;
           return calculateFaceLocation(bounding_box);
         });
+
         if (error) resetError();
         setBoundingBoxes(calculatedResults);
       } catch ({response}) {
-        console.log(response.data.error);
         return setError(response.data.error);
       }
     }
 
     const handleDetect = async () => {
       setLoading(true);
+
       if (boundingBoxes) resetBoundingBoxes();
+
       if (currentUser) {
-        setCurrentUser({...currentUser, predictions: currentUser.predictions + 1});
         await predictImage();
+        setCurrentUser({...currentUser, predictions: currentUser.predictions + 1});
         setLoading(false);
-        if (currentUser) return await updateUser(currentUser);
       } else {
         await predictImage();
         setLoading(false);
-        if (currentUser) return await updateUser(currentUser);
-        else return;
       }
     }
 
@@ -82,13 +81,21 @@ const Home = () => {
       }
     }
 
+    useEffect(() => {
+      const update = async () => {
+        if (currentUser) return await updateUser(currentUser);
+      }
+      update();
+    }, [currentUser])
+
   return (
     <div className='container'>
+      <h1>Welcome to Smart Brain</h1>
         <div className='input-container'>
         {currentUser ?
         <>
           <h2>Hi {currentUser.name.substring(0, 1).toUpperCase() + currentUser.name.substring(1, currentUser.name.length)}</h2>
-          <p> So far, you have made {currentUser.predictions} submissions</p>
+          <p>So far, you have made {currentUser.predictions} submissions</p>
         </> : null}
             <div className='insert-img-url'>
               <input type="text" placeholder='Insert image URL' value={inputFieldValue} onChange={handleInputChange}/>
@@ -96,7 +103,7 @@ const Home = () => {
             </div>
             <div className='upload-from-computer'>
               <span className='or'>OR</span>
-              <label className='btn' htmlFor='uploadFromComputer'>Upload from computer</label>
+              <label className='btn' htmlFor='uploadFromComputer'>Upload from device</label>
             </div>
             <input
               type="file"
@@ -106,8 +113,8 @@ const Home = () => {
               onChange={handleFileUpload}
             />
         </div>
-        {/* {error && <p className='error'>{error}</p>} */}
-        {imageURL ? <button type='button' id='detect' className='btn' onClick={handleDetect}>Detect</button> : null}
+        {error && <p className='error'>{error}</p>}
+        {imageURL ? <button type='button' id='detect' className='btn' onClick={handleDetect}>Detect faces</button> : null}
         <div className='image-container'>
             {isLoading ? <div className='loading-overlay on'><div className='spinner-container'><img src={loader} alt="loader"></img></div></div> : <div className='loading-overlay off'></div>}
             <img src={imageURL} ref={imgRef} alt=""/>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, createContext } from 'react';
 import { login, register } from '../http/requests';
 
 export const AuthContext = createContext({
@@ -22,11 +22,6 @@ export const AuthProvider = ({children}) => {
     const registerUser = async (data) => {
       return await register(data);
     }
-    
-    useEffect(() => {
-      if (!currentUser) return;
-      console.log(currentUser);
-    }, [currentUser]);
     
     const value = {currentUser, setCurrentUser, loginUser, loadUser, registerUser};
   return (
