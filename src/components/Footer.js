@@ -3,9 +3,11 @@ import {VscGithubInverted} from "react-icons/vsc";
 import {TfiLinkedin} from "react-icons/tfi";
 
 const Footer = () => {
+    const year = new Date().getFullYear();
+    
   return (
     <footer>
-        <p>Smart Brain - Face Recognition by Tom Rossner&copy; {new Date().getFullYear()}</p>
+        <p>Smart Brain - Face Recognition by Tom Rossner&copy; {year}</p>
         <span>|</span>
         <div className='icons-container'>
             <a

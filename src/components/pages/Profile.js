@@ -1,34 +1,36 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
-import { updateUser } from '../http/requests';
+import { updateProfileImg, updateUser } from '../../http/requests';
+import useAuth from '../../hooks/useAuth';
+import { useDispatch } from 'react-redux';
 
 const Profile = () => {
     const navigate = useNavigate();
-    const {currentUser, setCurrentUser} = useContext(AuthContext);
+    const {currentUser, setUser} = useAuth();
+    const dispatch = useDispatch();
 
     const handleFileUpload = async (e) => {
         const reader = new FileReader();
         const filesLength = e.target.files.length;
-        reader.addEventListener("load", () => setCurrentUser({...currentUser, imgUrl: reader.result}));
+
+        reader.addEventListener("load", async () => {
+            await updateProfileImg(currentUser?.email, reader.result)
+            dispatch(setUser({...currentUser, imgUrl: reader.result}))
+        });
+
         if (filesLength) reader.readAsDataURL(e.target.files[0]);
-        return await updateUser({...currentUser, imgUrl: reader.result});
     }
 
     const handleRemovePicture = async () => {
-        setCurrentUser({...currentUser, imgUrl: ""});
-        return await updateUser({...currentUser, imgUrl: ""});
+        dispatch(setUser({...currentUser, imgUrl: ""}));
+        return await updateProfileImg({...currentUser, imgUrl: ""});
     }
-
-    useEffect(() => {
-        if (!currentUser) navigate("/smartbrain-frontend");
-    }, [currentUser]);
 
   return (
     <div className='profile-container'>
         <div className='content'>
             <div className='img-container'>
-                {currentUser.imgUrl?.length ? <img src={currentUser.imgUrl} alt="Profile"/> : <div className='empty-picture-profile'></div>}
+                {currentUser.imgUrl?.length ? <img src={currentUser?.imgUrl} alt="Profile"/> : <div className='empty-picture-profile'></div>}
             </div>
             <label htmlFor="upload-profile-picture">{currentUser.imgUrl ? "Change profile picture" : "Upload profile picture"}</label>
             <input type="file" name="upload-profile-picture" id="upload-profile-picture" onChange={handleFileUpload}></input>

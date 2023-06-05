@@ -1,1 +1,1 @@
-export const selectImage = state => state.image.image;
+export const selectImageUrl = state => state.image.imageUrl;

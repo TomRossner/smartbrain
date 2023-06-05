@@ -1,6 +1,6 @@
-export const createAction = (action, value = null) => (
+export const createAction = (actionType, value = null) => (
     {
-       type: action,
+       type: actionType,
        payload: value
    }
 )

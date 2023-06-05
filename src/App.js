@@ -1,15 +1,14 @@
 // IMPORTS
 import Nav from "./components/Nav";
-import Home from "./components/Home";
+import Home from "./components/pages/Home";
 import Footer from "./components/Footer";
-import SignIn from "./components/SignIn";
-import Logout from "./components/Logout";
-import Register from "./components/Register";
-import Profile from "./components/Profile";
+import SignIn from "./components/pages/SignIn";
+import Logout from "./components/pages/Logout";
+import Register from "./components/pages/Register";
+import Profile from "./components/pages/Profile";
 
-import { AuthContext } from "./contexts/AuthContext";
-import { useContext } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import useAuth from "./hooks/useAuth";
 
 // STYLES
 import "./styles/global-styles.scss";
@@ -21,15 +20,17 @@ import "./styles/bounding-box.scss";
 import "./styles/profile.scss";
 import "./styles/animations.scss";
 import "./styles/media-queries.scss";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 const App = () => {
-  const {currentUser} = useContext(AuthContext);
+  const {currentUser} = useAuth();
+
   return (
     <div className="app-container">
         <Nav/>
         <Routes>
-          <Route path="/" element={<Home/>}/>
+          <Route path="/" element={<ProtectedRoute element={<Home/>}/>}/>
           {!currentUser
           ? (
             <>
@@ -38,8 +39,8 @@ const App = () => {
             </>
           ) : (
             <>  
-              <Route path="/profile" element={<Profile/>}></Route>
-              <Route path="/logout" element={<Logout/>}/>
+              <Route path="/profile" element={<ProtectedRoute element={<Profile/>}/>}/>
+              <Route path="/logout" element={<ProtectedRoute element={<Logout/>}/>}/>
             </>
           )}
         </Routes>

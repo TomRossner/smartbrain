@@ -1,46 +1,52 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
-import { ImageContext } from '../contexts/ImageContext';
-import { predict, updateUser } from '../http/requests';
-import BoundingBox from './BoundingBox';
-import loader from "../assets/loader.png";
+import { predict, updateUser } from '../../http/requests';
+import BoundingBox from '../BoundingBox';
+import loader from "../../assets/loader.png";
+import { useDispatch } from 'react-redux';
+import useAuth from '../../hooks/useAuth';
+import useImage from '../../hooks/useImage';
 
 const Home = () => {
-    const {currentUser, setCurrentUser} = useContext(AuthContext);
-    const {imageURL, setImageURL} = useContext(ImageContext);
     const [inputFieldValue, setInputFieldValue] = useState("");
     const [boundingBoxes, setBoundingBoxes] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const imgRef = useRef(null);
     const [error, setError] = useState("");
+    const dispatch = useDispatch();
+    const {setUser, currentUser} = useAuth();
+    const {setImageUrl, imageUrl} = useImage();
 
     const handleFileUpload = (e) => {
       const reader = new FileReader();
       const filesLength = e.target.files.length;
-      reader.addEventListener("load", () => setImageURL(reader.result), true);
+      reader.addEventListener("load", () => dispatch(setImageUrl(reader.result)));
 
       if (filesLength) reader.readAsDataURL(e.target.files[0]);
       if (boundingBoxes.length) resetBoundingBoxes();
-      return reader.removeEventListener("load", setImageURL(reader.result), true);
+      return reader.removeEventListener("load", dispatch(setImageUrl(reader.result)));
     }
 
     const handleInputChange = (e) => setInputFieldValue(e.target.value);
 
     const handleAddImage = () => {
       if (!inputFieldValue) return;
+
       if (boundingBoxes.length) resetBoundingBoxes();
+
       if (error) resetError();
-      setImageURL(inputFieldValue);
+
+      dispatch(setImageUrl(inputFieldValue));
+
       return setInputFieldValue("");
     }
 
     const resetBoundingBoxes = () => setBoundingBoxes([]);
+
     const resetError = () => setError("");
 
     const predictImage = async () => {
       try {
-        const {data: {results}} = await predict(imageURL);
+        const {data: {results}} = await predict(imageUrl);
 
         const calculatedResults = results[0].map(result => {
           const {region_info: {bounding_box}} = result;
@@ -48,6 +54,7 @@ const Home = () => {
         });
 
         if (error) resetError();
+
         setBoundingBoxes(calculatedResults);
       } catch ({response}) {
         return setError(response.data.error);
@@ -61,7 +68,7 @@ const Home = () => {
 
       if (currentUser) {
         await predictImage();
-        setCurrentUser({...currentUser, predictions: currentUser.predictions + 1});
+        dispatch(setUser({...currentUser, predictions: currentUser.predictions + 1}));
         setLoading(false);
       } else {
         await predictImage();
@@ -86,7 +93,7 @@ const Home = () => {
         if (currentUser) return await updateUser(currentUser);
       }
       update();
-    }, [currentUser])
+    }, [currentUser]);
 
   return (
     <div className='container'>
@@ -114,10 +121,10 @@ const Home = () => {
             />
         </div>
         {error && <p className='error'>{error}</p>}
-        {imageURL ? <button type='button' id='detect' className='btn' onClick={handleDetect}>Detect faces</button> : null}
+        {imageUrl ? <button type='button' id='detect' className='btn' onClick={handleDetect}>Detect faces</button> : null}
         <div className='image-container'>
             {isLoading ? <div className='loading-overlay on'><div className='spinner-container'><img src={loader} alt="loader"></img></div></div> : <div className='loading-overlay off'></div>}
-            <img src={imageURL} ref={imgRef} alt=""/>
+            <img src={imageUrl} ref={imgRef} alt=""/>
             {boundingBoxes.map((box, index) => <BoundingBox key={index} box={box}/>)}
         </div>
     </div>

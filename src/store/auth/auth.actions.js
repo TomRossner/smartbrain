@@ -15,7 +15,7 @@ export const fetchUserSuccess = (user) => {
     return createAction(AUTH_ACTION_TYPES.FETCH_USER_SUCCESS, user);
 }
 export const fetchUserFailed = (error) => {
-    return createAction(AUTH_ACTION_TYPES.SET_USER, error);
+    return createAction(AUTH_ACTION_TYPES.FETCH_USER_FAILED, error);
 }
 export const logout = () => {
     return createAction(AUTH_ACTION_TYPES.LOGOUT);

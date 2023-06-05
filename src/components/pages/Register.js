@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
+import useAuth from '../../hooks/useAuth';
 
 export const defaultFieldValues = {
   email: "",
@@ -12,7 +12,7 @@ export const defaultFieldValues = {
 const Register = () => {
     const [fieldValues, setFieldValues] = useState(defaultFieldValues);
     const [error, setError] = useState("");
-    const {registerUser} = useContext(AuthContext);
+    const {registerUser} = useAuth();
     const {name, password, confirmPassword, email} = fieldValues;
     const navigate = useNavigate();
 
@@ -32,8 +32,8 @@ const Register = () => {
       try {
         await registerUser(fieldValues);
         navigate("/sign-in");
-      } catch ({response}) {
-        setError(response.data);
+      } catch (error) {
+        setError(error.response.data.error || 'Failed to register');
       }
     };
 
